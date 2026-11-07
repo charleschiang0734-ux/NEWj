@@ -1,41 +1,164 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>我的在线书店</title>
-    <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        header { text-align: center; background: #2c3e50; color: white; padding: 30px; border-radius: 8px; }
-        .container { max-width: 800px; margin: 30px auto; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .book-card { background: white; width: 230px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
-        .book-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .book-desc { font-size: 14px; color: #666; margin-bottom: 15px; }
-        .book-price { font-size: 16px; color: #e74c3c; font-weight: bold; margin-bottom: 15px; }
-        .buy-btn { background: #27ae60; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        .buy-btn:hover { background: #219653; }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luminary Books — Premium eBooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/playfair-display@latest/latin.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin.css">
+<style>
+  :root {
+    --cream: #faf6f0;
+    --ink: #1a1a2e;
+    --accent: #c8553d;
+    --gold: #d4a574;
+    --sage: #6b8e7f;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+  body { background: var(--cream); color: var(--ink); }
 
-    <header>
-        <h1>📚 欢迎来到我的在线书店</h1>
-        <p>精选好书，伴你成长</p>
-    </header>
+  .book-cover {
+    position: relative;
+    border-radius: 4px;
+    box-shadow: 
+      0 20px 40px -15px rgba(0,0,0,0.3),
+      inset -2px 0 4px rgba(0,0,0,0.1),
+      inset 2px 0 4px rgba(255,255,255,0.1);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .book-cover::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 12px;
+    background: linear-gradient(to right, rgba(0,0,0,0.3), transparent);
+    pointer-events: none;
+  }
+  .book-cover::after {
+    content: '';
+    position: absolute;
+    left: 12px; top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+  .book-card:hover .book-cover {
+    transform: translateY(-8px) rotateY(-5deg);
+    box-shadow: 0 30px 50px -15px rgba(0,0,0,0.4);
+  }
+  .book-card { perspective: 1000px; }
 
-    <div class="container">
-        {% for book in books %}
-        <div class="book-card">
-            <div>
-                <div class="book-title">{{ book.title }}</div>
-                <div class="book-desc">{{ book.desc }}</div>
-            </div>
-            <div>
-                <div class="book-price">{{ book.price }}</div>
-                <button class="buy-btn" onclick="alert('感谢购买《{{ book.title }}》！(演示版)')">立即购买</button>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+  .cover-1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+  .cover-2 { background: linear-gradient(135deg, #f4c2c2 0%, #e8a5a5 50%, #d4a5a5 100%); }
+  .cover-3 { background: linear-gradient(135deg, #ff8c42 0%, #ffb26b 50%, #ffd89b 100%); }
+  .cover-4 { background: linear-gradient(135deg, #0a2463 0%, #1e5f8a 50%, #3e92cc 100%); }
+  .cover-5 { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #404040 100%); }
+  .cover-6 { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 50%, #f39c12 100%); }
+  .cover-7 { background: linear-gradient(135deg, #f5e6d3 0%, #e8c4a8 50%, #d4a574 100%); }
+  .cover-8 { background: linear-gradient(135deg, #2d1b4e 0%, #6a4c93 50%, #00d9ff 100%); }
+  .cover-9 { background: linear-gradient(135deg, #2c5f2d 0%, #97bc62 50%, #d4a373 100%); }
+  .cover-10 { background: linear-gradient(135deg, #2a9d8f 0%, #e76f51 50%, #f4a261 100%); }
 
-</body>
-</html>
+  .cover-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.2) 0%, transparent 40%);
+  }
+  .cover-title {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    color: white;
+    font-family: 'Playfair Display', serif;
+  }
+  .cover-title.dark { color: #1a1a2e; }
+
+  .fade-in { animation: fadeIn 0.6s ease-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .slide-in { animation: slideIn 0.4s ease-out; }
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  .modal-in { animation: modalIn 0.3s ease-out; }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .star { color: #d4a574; }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    transition: all 0.3s;
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+  .category-chip {
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  .category-chip.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .category-chip:not(.active):hover {
+    border-color: var(--ink);
+  }
+
+  .cart-badge {
+    background: var(--accent);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    font-weight: 600;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { scrollbar-width: none; }
+
+  .rating-bar {
+    height: 3px;
+    background: #e5e5e5;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .rating-fill {
+    height: 100%;
+    background: var(--gold);
+  }
+
+  .toast {
+    animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2s forwards;
+  }
+  @keyframes toastIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastOut {
+    to { transform: translateX(-100%); opacity: 0; }
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, #faf6f0 0%, #f0e6d6 50%, #e8d
